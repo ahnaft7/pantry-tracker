@@ -143,7 +143,7 @@ export default function Home() {
             <Box
               key = {item.name}
               width="100%"
-              minHeight="150px"
+              minHeight="100px"
               display={'flex'}
               justifyContent={'space-between'}
               alignItems={'center'}
