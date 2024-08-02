@@ -22,7 +22,7 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: { xs: '90%', sm: 400 },
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
@@ -131,11 +131,11 @@ export default function Home() {
       </Modal>
       <Button 
         variant='contained' 
-        sx={{ borderRadius: '8px', padding: '10px 20px' }}  
+        sx={{ borderRadius: '8px', padding: { xs: '8px 16px', sm: '10px 20px' } }}
         onClick={handleOpen}>
           Add
       </Button>
-      <Box width="800px" display="flex" flexDirection="column" gap={2}>
+      <Box width={{ xs: '100%', sm: '800px' }} display="flex" flexDirection="column" alignItems="center" gap={2}>
         <TextField 
           label="Search Items" 
           variant="outlined" 
@@ -165,7 +165,12 @@ export default function Home() {
             textAlign={'center'}
             marginTop="16px"
           >
-            <Typography variant={'h4'} color={'#333'} textAlign={'center'}>
+            <Typography 
+              variant={'h4'} 
+              color={'#333'} 
+              textAlign={'center'} 
+              sx={{ fontSize: { xs: '28px', sm: '32px' } }}
+            >
               Pantry Items
             </Typography>
           </Box>
@@ -193,18 +198,28 @@ export default function Home() {
                   variant={'h6'}
                   color={'#333'}
                   textAlign={'center'}
+                  sx={{ 
+                    fontSize: { xs: '14px', sm: '18px' }
+                  }}
                 >
                   {
                     item.name.charAt(0).toUpperCase() + item.name.slice(1)
                   }
                 </Typography>
-                <Typography variant="h7" color={'#333'} textAlign={'center'}>
+                <Typography 
+                  variant="h7" 
+                  color={'#333'} 
+                  textAlign={'center'}
+                  sx={{ 
+                    fontSize: { xs: '12px', sm: '16px' }
+                  }}
+                >
                   Quantity: {item.count}
                 </Typography>
 
                 <Button 
                 variant='contained' 
-                sx={{ borderRadius: '8px', backgroundColor: '#d32f2f' }}
+                sx={{ borderRadius: '8px', backgroundColor: '#d32f2f', padding: { xs: '8px 16px', sm: '10px 20px' }}}
                 onClick={() => removeItem(item)}>
                   Remove
                 </Button>
