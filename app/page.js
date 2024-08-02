@@ -133,7 +133,7 @@ export default function Home() {
         variant='contained' 
         sx={{ borderRadius: '8px', padding: { xs: '8px 16px', sm: '10px 20px' } }}
         onClick={handleOpen}>
-          Add
+          Add New Item
       </Button>
       <Box width={{ xs: '100%', sm: '800px' }} display="flex" flexDirection="column" alignItems="center" gap={2}>
         <TextField 
