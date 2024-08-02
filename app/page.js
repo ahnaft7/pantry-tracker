@@ -34,12 +34,12 @@ const style = {
 
 export default function Home() {
   const [pantry, setPantry] = useState([])
-
   const [open, setOpen] = useState(false)
+  const [itemName, setItemName] = useState('')
+  const [searchTerm, setSearchTerm] = useState('');
+
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
-
-  const [itemName, setItemName] = useState('')
 
   const updatePantry = async () => {
     const snapshot = query(collection(firestore, 'pantry'))
@@ -83,6 +83,10 @@ export default function Home() {
     await updatePantry()
   }
 
+  const filteredPantry = pantry.filter(item =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+
   return (
     <Box
       width="100vw"
@@ -92,6 +96,7 @@ export default function Home() {
       flexDirection={'column'}
       alignItems={'center'}
       gap={2}
+      padding={2}
     >
       <Modal
         open={open}
@@ -112,7 +117,7 @@ export default function Home() {
               value={itemName}
               onChange={(e) => setItemName(e.target.value)}
             />
-            <Button variant="outlined"
+            <Button variant="outlined" sx={{ borderRadius: '8px' }}
             onClick={() => {
               addItem(itemName)
               setItemName('')
@@ -124,51 +129,89 @@ export default function Home() {
           </Stack>
         </Box>
       </Modal>
-      <Button variant='contained' onClick={handleOpen}>Add</Button>
-      <Box border={'1px solid #333'}>
-        <Box 
-          width='800px' 
-          height='100px' 
-          bgcolor={'#ADD8E6'} 
-          display={'flex'} 
-          justifyContent={'center'} 
-          alignItems={'center'}
+      <Button 
+        variant='contained' 
+        sx={{ borderRadius: '8px', padding: '10px 20px' }}  
+        onClick={handleOpen}>
+          Add
+      </Button>
+      <Box width="800px" display="flex" flexDirection="column" gap={2}>
+        <TextField 
+          label="Search Items" 
+          variant="outlined" 
+          fullWidth 
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          sx={{ marginBottom: '16px', borderRadius: '8px' }}
+        />
+        <Box
+          width="100%" 
+          display="flex" 
+          flexDirection="column" 
+          alignItems="center" 
+          border={'1px solid #333'}
+          borderRadius={'25px'}
+          overflow={'hidden'}
+          boxShadow={'0 4px 8px rgba(0,0,0,0.1)'}
         >
-          <Typography variant={'h3'} color={'#333'} textAlign={'center'}>
-            Pantry Items
-          </Typography>
-        </Box>
-        <Stack width="800px" height="300px" spacing={2} overflow={'auto'}>
-          {pantry.map((item) => (
-            <Box
-              key = {item.name}
-              width="100%"
-              minHeight="100px"
-              display={'flex'}
-              justifyContent={'space-between'}
-              alignItems={'center'}
-              paddingX={5}
-              bgcolor={'#f0f0f0'}
-            >
-              <Typography
-                variant={'h4'}
-                color={'#333'}
-                textAlign={'center'}
+          <Box 
+            width='90%' 
+            height='80px' 
+            bgcolor={'#ADD8E6'} 
+            display={'flex'} 
+            justifyContent={'center'} 
+            alignItems={'center'}
+            borderRadius={'25px 25px 25px 25px'}
+            textAlign={'center'}
+            marginTop="16px"
+          >
+            <Typography variant={'h4'} color={'#333'} textAlign={'center'}>
+              Pantry Items
+            </Typography>
+          </Box>
+          <Stack width="100%" height="300px" spacing={2} overflow={'auto'} padding={2} alignItems="center" >
+            {filteredPantry.map((item) => (
+              <Box
+                key = {item.name}
+                width="80%"
+                minHeight="60px"
+                display={'flex'}
+                justifyContent={'space-between'}
+                alignItems={'center'}
+                paddingX={5}
+                bgcolor={'#f0f0f0'}
+                borderRadius={'25px'}
+                boxShadow={'0 2px 4px rgba(0,0,0,0.1)'}
+                sx={{
+                  transition: 'transform 0.2s',
+                  '&:hover': {
+                    transform: 'scale(1.02)',
+                  }
+                }}
               >
-                {
-                  item.name.charAt(0).toUpperCase() + item.name.slice(1)
-                }
-              </Typography>
-              <Typography variant="h4" color={'#333'} textAlign={'center'}>
-                Quantity: {item.count}
-              </Typography>
+                <Typography
+                  variant={'h6'}
+                  color={'#333'}
+                  textAlign={'center'}
+                >
+                  {
+                    item.name.charAt(0).toUpperCase() + item.name.slice(1)
+                  }
+                </Typography>
+                <Typography variant="h7" color={'#333'} textAlign={'center'}>
+                  Quantity: {item.count}
+                </Typography>
 
-              <Button variant='contained' onClick={() => removeItem(item)}>
-                Remove
-              </Button>
-            </Box>
-          ))}
-        </Stack>
+                <Button 
+                variant='contained' 
+                sx={{ borderRadius: '8px', backgroundColor: '#d32f2f' }}
+                onClick={() => removeItem(item)}>
+                  Remove
+                </Button>
+              </Box>
+            ))}
+          </Stack>
+        </Box>
       </Box>
     </Box>
   );
