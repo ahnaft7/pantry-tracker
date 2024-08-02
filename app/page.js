@@ -208,7 +208,7 @@ export default function Home() {
         >
           <Box sx={style}>
             <Typography id="camera-modal-title" variant="h6" component="h2">
-              Capture Image
+              Camera Loading...
             </Typography>
             {!isCaptured ? (
               <Box sx={cameraContainerStyle}>
