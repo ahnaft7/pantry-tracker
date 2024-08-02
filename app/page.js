@@ -34,6 +34,14 @@ const style = {
   gap: 3,
 };
 
+const cameraContainerStyle = {
+  width: '100%',
+  height: '200px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+};
+
 export default function Home() {
   const [pantry, setPantry] = useState([])
   const [open, setOpen] = useState(false)
@@ -66,6 +74,8 @@ export default function Home() {
         const downloadURL = await getDownloadURL(storageRef);
         setImageURL(downloadURL);
         console.log('Uploaded Image URL:', downloadURL);
+        setCapturedImage(null);
+        setIsCaptured(false);
         handleCameraClose();
       } catch (error) {
         console.error("Error uploading image:", error);
@@ -199,7 +209,7 @@ export default function Home() {
               Capture Image
             </Typography>
             {!isCaptured ? (
-              <>
+              <Box sx={cameraContainerStyle}>
                 <Camera ref={cameraRef} />
                 <Button 
                   variant="contained"
@@ -208,7 +218,7 @@ export default function Home() {
                 >
                   Capture Photo
                 </Button>
-              </>
+              </Box>
             ) : (
               <>
                 <img src={capturedImage} alt="Captured" style={{ width: '100%', height: 'auto' }} />
