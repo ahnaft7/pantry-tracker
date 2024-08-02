@@ -338,7 +338,7 @@ export default function Home() {
 
                 <Button 
                 variant='contained' 
-                sx={{ borderRadius: '8px', backgroundColor: '#d32f2f', padding: { xs: '8px 16px', sm: '10px 20px' }}}
+                sx={{ borderRadius: '8px', backgroundColor: '#d32f2f', padding: { xs: '4px 12px', sm: '6px 14px' }}}
                 onClick={() => removeItem(item)}>
                   Remove
                 </Button>
