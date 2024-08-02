@@ -213,13 +213,24 @@ export default function Home() {
             {!isCaptured ? (
               <Box sx={cameraContainerStyle}>
                 <Camera ref={cameraRef} />
-                <Button 
-                  variant="contained"
-                  sx={{ borderRadius: '8px', marginTop: 2 }}
-                  onClick={handleCaptureImage}
-                >
-                  Capture Photo
-                </Button>
+                <Stack direction='row' spacing={2} sx={{ marginTop: 4, marginBottom: 2, position: 'relative', top: '80px' }}>
+                  <Button 
+                    variant="contained"
+                    sx={{ borderRadius: '8px', marginTop: 2 }}
+                    onClick={handleCaptureImage}
+                  >
+                    Capture Photo
+                  </Button>
+                  <Button 
+                    variant="contained"
+                    sx={{ borderRadius: '8px', marginTop: 2 }}
+                    onClick={() => {
+                      cameraRef.current.switchCamera();
+                    }}
+                  >
+                    Switch Camera
+                  </Button>
+                </Stack>
               </Box>
             ) : (
               <>
