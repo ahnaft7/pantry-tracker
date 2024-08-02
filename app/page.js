@@ -1,8 +1,10 @@
 'use client'
 import { Box, Stack, Typography, Button, Modal, handleClose, TextField } from '@mui/material'
-import { firestore } from '@/firebase';
+import { firestore, storage } from '@/firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { collection, query, doc, getDocs, setDoc, deleteDoc, getDoc } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { Camera } from 'react-camera-pro';
 
 const item = [ 
   'tomato',
@@ -37,9 +39,52 @@ export default function Home() {
   const [open, setOpen] = useState(false)
   const [itemName, setItemName] = useState('')
   const [searchTerm, setSearchTerm] = useState('');
+  const [cameraOpen, setCameraOpen] = useState(false);
+  const [imageURL, setImageURL] = useState('');
+  const [capturedImage, setCapturedImage] = useState(null);
+  const [isCaptured, setIsCaptured] = useState(false);
+  const cameraRef = useRef(null);
 
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
+  const handleCameraOpen = () => setCameraOpen(true);
+  const handleCameraClose = () => setCameraOpen(false);
+
+  const handleCapture = useCallback(async () => {
+    if (capturedImage) {
+      try {
+        // Generate a unique file name
+        const fileName = `captured_image_${Date.now()}.jpg`;
+        
+        // Create a Blob from the base64 string
+        const response = await fetch(capturedImage);
+        const blob = await response.blob();
+
+        const storageRef = ref(storage, `images/${fileName}`);
+
+        await uploadBytes(storageRef, blob);
+        const downloadURL = await getDownloadURL(storageRef);
+        setImageURL(downloadURL);
+        console.log('Uploaded Image URL:', downloadURL);
+        handleCameraClose();
+      } catch (error) {
+        console.error("Error uploading image:", error);
+      }
+    }
+  }, [capturedImage]);
+
+  const handleCaptureImage = useCallback(() => {
+    if (cameraRef.current) {
+      const photo = cameraRef.current.takePhoto();
+      setCapturedImage(photo);
+      setIsCaptured(true);
+    }
+  }, []);
+
+  const handleRetakeImage = useCallback(() => {
+    setCapturedImage(null);
+    setIsCaptured(false);
+  }, []);
 
   const updatePantry = async () => {
     const snapshot = query(collection(firestore, 'pantry'))
@@ -135,6 +180,57 @@ export default function Home() {
         onClick={handleOpen}>
           Add New Item
       </Button>
+      <Button
+        variant='contained'
+        sx={{ borderRadius: '8px', padding: { xs: '8px 16px', sm: '10px 20px' } }}
+        onClick={handleCameraOpen}
+      >
+        Add Image
+      </Button>
+      {cameraOpen && (
+        <Modal
+          open={cameraOpen}
+          onClose={handleCameraClose}
+          aria-labelledby="camera-modal-title"
+          aria-describedby="camera-modal-description"
+        >
+          <Box sx={style}>
+            <Typography id="camera-modal-title" variant="h6" component="h2">
+              Capture Image
+            </Typography>
+            {!isCaptured ? (
+              <>
+                <Camera ref={cameraRef} />
+                <Button 
+                  variant="contained"
+                  sx={{ borderRadius: '8px', marginTop: 2 }}
+                  onClick={handleCaptureImage}
+                >
+                  Capture Photo
+                </Button>
+              </>
+            ) : (
+              <>
+                <img src={capturedImage} alt="Captured" style={{ width: '100%', height: 'auto' }} />
+                <Button 
+                  variant="contained"
+                  sx={{ borderRadius: '8px', marginTop: 2 }}
+                  onClick={handleRetakeImage}
+                >
+                  Retake Photo
+                </Button>
+                <Button 
+                  variant="contained"
+                  sx={{ borderRadius: '8px', marginTop: 2 }}
+                  onClick={handleCapture}
+                >
+                  Upload Image
+                </Button>
+              </>
+            )}
+          </Box>
+        </Modal>
+      )}
       <Box width={{ xs: '100%', sm: '800px' }} display="flex" flexDirection="column" alignItems="center" gap={2}>
         <TextField 
           label="Search Items" 
