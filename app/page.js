@@ -1,6 +1,6 @@
 'use client'
 import { Box, Stack, Typography, Button, Modal, handleClose, TextField } from '@mui/material'
-import { firestore, storage } from '@/firebase';
+import { firestore, storage } from '../firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { collection, query, doc, getDocs, setDoc, deleteDoc, getDoc } from 'firebase/firestore';
 import { useEffect, useState, useCallback, useRef } from 'react';
@@ -51,6 +51,7 @@ export default function Home() {
   const [imageURL, setImageURL] = useState('');
   const [capturedImage, setCapturedImage] = useState(null);
   const [isCaptured, setIsCaptured] = useState(false);
+  const [classificationResult, setClassificationResult] = useState('');
   const cameraRef = useRef(null);
 
   const handleOpen = () => setOpen(true)
@@ -74,6 +75,9 @@ export default function Home() {
         const downloadURL = await getDownloadURL(storageRef);
         setImageURL(downloadURL);
         console.log('Uploaded Image URL:', downloadURL);
+        
+        await classifyImage(downloadURL);
+
         setCapturedImage(null);
         setIsCaptured(false);
         handleCameraClose();
@@ -95,6 +99,37 @@ export default function Home() {
     setCapturedImage(null);
     setIsCaptured(false);
   }, []);
+
+  const classifyImage = async (imageURL) => {
+    try {
+      const response = await fetch('/api/classify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageURL })
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorData.error}`);
+      }
+  
+      const result = await response.json();
+      console.log('Classification Result:', result);
+      console.log('Classified Item:', result.classifiedItem)
+      setClassificationResult(result.classifiedItem);
+  
+      if (result.classifiedItem) {
+        addItem(result.classifiedItem);
+      }
+    } catch (error) {
+      console.error('Error:', error.message);
+    }
+  };
+  
+  
+  
+  
+  
 
   const updatePantry = async () => {
     const snapshot = query(collection(firestore, 'pantry'))
@@ -186,6 +221,9 @@ export default function Home() {
           </Stack>
         </Box>
       </Modal>
+      <Typography variant="h6" sx={{ marginTop: 2 }}>
+        Last Image Added: {classificationResult}
+      </Typography>
       <Button 
         variant='contained' 
         sx={{ borderRadius: '8px', padding: { xs: '8px 16px', sm: '10px 20px' } }}
