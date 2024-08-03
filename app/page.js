@@ -245,31 +245,33 @@ export default function Home() {
           aria-describedby="camera-modal-description"
         >
           <Box sx={style}>
-            <Typography id="camera-modal-title" variant="h6" component="h2">
-              Camera Loading...
-            </Typography>
-            {!isCaptured ? (
-              <Box sx={cameraContainerStyle}>
-                <Camera ref={cameraRef} />
-                <Stack direction='row' spacing={2} sx={{ marginTop: 4, marginBottom: 2, position: 'relative', top: '80px' }}>
-                  <Button 
-                    variant="contained"
-                    sx={{ borderRadius: '8px', marginTop: 2 }}
-                    onClick={handleCaptureImage}
-                  >
-                    Capture Photo
-                  </Button>
-                  <Button 
-                    variant="contained"
-                    sx={{ borderRadius: '8px', marginTop: 2 }}
-                    onClick={() => {
-                      cameraRef.current.switchCamera();
-                    }}
-                  >
-                    Switch Camera
-                  </Button>
-                </Stack>
-              </Box>
+          {!isCaptured ? (
+            <>
+              <Typography id="camera-modal-title" variant="h6" component="h2">
+                Camera Loading...
+              </Typography>
+                <Box sx={cameraContainerStyle}>
+                  <Camera ref={cameraRef} />
+                  <Stack direction='row' spacing={2} sx={{ marginTop: 4, marginBottom: 2, position: 'relative', top: '80px' }}>
+                    <Button 
+                      variant="contained"
+                      sx={{ borderRadius: '8px', marginTop: 2 }}
+                      onClick={handleCaptureImage}
+                    >
+                      Capture Photo
+                    </Button>
+                    <Button 
+                      variant="contained"
+                      sx={{ borderRadius: '8px', marginTop: 2 }}
+                      onClick={() => {
+                        cameraRef.current.switchCamera();
+                      }}
+                    >
+                      Switch Camera
+                    </Button>
+                  </Stack>
+                </Box>
+              </>
             ) : (
               <>
                 <img src={capturedImage} alt="Captured" style={{ width: '100%', height: 'auto' }} />
