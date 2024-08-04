@@ -316,7 +316,7 @@ export default function Home() {
           <Box 
             width='90%' 
             height='80px' 
-            bgcolor={'#ADD8E6'} 
+            bgcolor={'#f0ead6'} 
             display={'flex'} 
             justifyContent={'center'} 
             alignItems={'center'}
