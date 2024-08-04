@@ -189,7 +189,11 @@ export default function Home() {
       alignItems={'center'}
       gap={2}
       padding={2}
+      bgcolor={'#f7f7f7'}
     >
+      <Typography variant="h3" sx={{ marginBottom: 4, fontWeight: 'bold' }}>
+        Welcome to your AI Powered Pantry Tracker!
+      </Typography>
       <Modal
         open={open}
         onClose={handleClose}
@@ -308,10 +312,11 @@ export default function Home() {
           display="flex" 
           flexDirection="column" 
           alignItems="center" 
-          border={'1px solid #333'}
-          borderRadius={'25px'}
-          overflow={'hidden'}
-          boxShadow={'0 4px 8px rgba(0,0,0,0.1)'}
+          border="1px solid #ddd"
+          borderRadius="16px"
+          overflow="hidden"
+          boxShadow="0 4px 8px rgba(0,0,0,0.1)"
+          bgcolor="white"
         >
           <Box 
             width='90%' 
